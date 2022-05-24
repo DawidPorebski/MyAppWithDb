@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  testpostgres:
+     image: postgres:latest
+     restart: always
+     environment:
+         POSTGRES_USER: test
+         POSTGRES_PASSWORD: test
+     volumes:
+       - pgdata:/var/lib/postgresql/data
+
+  myappwithdb:
+    image: ${DOCKER_REGISTRY-}myappwithdb
+    restart: always
+    build:
+      context: .
+      dockerfile: MyAppWithDb/Dockerfile
+    ports:
+       - 5000:80
+    depends_on:
+       - "testpostgres"
+
+volumes:
+  pgdata:
